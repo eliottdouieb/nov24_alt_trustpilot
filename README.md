@@ -1,45 +1,67 @@
-Project Name
+Trust Pilot
 ==============================
 
-This repo is a Starting Pack for DS projects. You can rearrange the structure to make it fits your project.
+# Installation et mise en place
 
-Project Organization
-------------
+1️. Cloner le dépôt
+```bash
+git clone https://github.com/eliottdouieb/nov24_alt_trustpilot
+cd nov24_alt_trustpilot
+```
+2️. Créer un environnement virtuel (fortement recommandé)
 
-    ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data               <- Should be in your computer but not on Github (only in .gitignore)
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's name, and a short `-` delimited description, e.g.
-    │                         `1.0-alban-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, links, and all other explanatory materials.
-    │
-    ├── reports            <- The reports that you'll make during this project as PDF
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
---------
+3️. Installer les dépendances
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+```bash
+pip install -r requirements.txt
+```
+
+# Analyse exploratoire des avis Trustpilot
+
+Prérequis
+- Python ≥ 3.10
+- (fortement recommandé) un environnement virtuel Python
+
+## Exécution du notebook d’exploration
+Lancer Jupyter :
+
+```bash
+jupyter notebook
+```
+
+Puis ouvrir le notebook d’exploration : ./notebooks/01_exploration_de_donnees.ipynb.
+
+Étape obligatoire (à exécuter en premier)
+La section suivante du notebook :
+```md
+# Import et chargement des données
+```
+doit impérativement être exécutée en priorité, car elle :
+- charge les librairies,
+- télécharge les ressources nécessaires (NLTK, spaCy)
+- charge le jeu de données.
+
+Aucune autre section ne fonctionnera correctement sans cette étape.
+
+Une fois la section Import et chargement des données exécutée,
+Les sections suivantes peuvent être lancées dans n’importe quel ordre.
+
+Sections disponibles :
+Kinjal
+Analyse des taux de commentaires et de réponses selon la note + preprocessing NLP.
+
+Julie
+Répartition temporelle des commentaires (mois, saisons, années, tendances).
+
+Laurine
+Présence de réponse en fonction de la note et de la longueur des commentaires + analyse textuelle.
+
+Quentin
+Analyse de la longueur des commentaires vis-à-vis des notes et exploration lexicale.
+
+# Preprocessing des données
