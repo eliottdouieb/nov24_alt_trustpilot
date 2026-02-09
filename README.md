@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 
 Prérequis
-- Python ≥ 3.10
+- Python ≥ 3.10 (3.11.9 recommandé)
 - (fortement recommandé) un environnement virtuel Python
 
 ==============================
