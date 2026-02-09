@@ -12,9 +12,18 @@ cd nov24_alt_trustpilot
 ```
 2️. Créer un environnement virtuel (fortement recommandé)
 
+Sur Windows :
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
+```
+
+Sur Linux :
+
+```bash
+python -m venv venv
+source venv/bin/activate
 ```
 
 3️. Installer les dépendances
@@ -24,7 +33,7 @@ pip install -r requirements.txt
 ```
 
 Prérequis
-- Python ≥ 3.10
+- Python ≥ 3.10 (3.11.9 recommandé)
 - (fortement recommandé) un environnement virtuel Python
 
 ==============================
@@ -125,3 +134,8 @@ Embeddings disponibles :
 Les embeddings sont sauvegardés dans le dossier data/embeddings afin d’éviter toute régénération inutile.
 
 ⚠️ Certaines cellules peuvent être longues à exécuter sans GPU, en particulier pour les modèles BERT.
+
+### Top2Vec
+Environnement Python recommandé
+- Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.x**.  
+- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.  

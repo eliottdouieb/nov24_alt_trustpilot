@@ -161,3 +161,8 @@ cython_debug/
 
 # VSCode configuration files
 .vscode/
+
+# Folders
+models/
+data/processed/
+data/embeddings/
