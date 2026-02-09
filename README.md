@@ -12,9 +12,18 @@ cd nov24_alt_trustpilot
 ```
 2️. Créer un environnement virtuel (fortement recommandé)
 
+Sur Windows :
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
+```
+
+Sur Linux :
+
+```bash
+python -m venv venv
+source venv/bin/activate
 ```
 
 3️. Installer les dépendances
