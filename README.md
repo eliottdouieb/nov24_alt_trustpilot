@@ -139,4 +139,17 @@ Les embeddings sont sauvegardés dans le dossier data/embeddings afin d’évite
 ### Top2Vec
 Environnement Python recommandé
 - Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.x**.  
-- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.  
+- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.
+
+## Topic Modeling et Classification
+
+Les étapes de Topic Modeling (`03_`) et de Classification (`04_`) sont liées par une étape d'annotation manuelle.
+
+**Important :**
+L'output des notebooks `03_topicmodeling` sert de base à l'annotation, qui produit ensuite l'input pour les notebooks `04_classification`.
+
+Cependant, **les données annotées nécessaires pour l'étape 4 sont déjà incluses dans le dépôt git.**
+
+Conséquences :
+- Vous **pouvez** exécuter les notebooks de classification (`04`) directement, **sans avoir exécuté** les notebooks de topic modeling (`03`).
+- Si vous relancez l'étape 3, vous ne pourrez pas utiliser directement vos résultats pour l'étape 4 sans refaire l'annotation manuelle.
