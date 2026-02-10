@@ -138,7 +138,7 @@ Les embeddings sont sauvegardés dans le dossier data/embeddings afin d’évite
 
 ### Top2Vec
 Environnement Python recommandé
-- Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.x**.  
+- Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.9**.  
 - Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.
 
 ## Topic Modeling et Classification
