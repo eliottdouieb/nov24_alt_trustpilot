@@ -44,7 +44,8 @@ Le projet est structuré autour de plusieurs notebooks Jupyter :
 
 - 01_exploration_de_donnees.ipynb
 - 02_preprocessing.ipynb
-- 03_modelisations_.ipynb (plusieurs approches testées)
+- 03_topicmodeling_*.ipynb (plusieurs approches de Topic Modeling testées)
+- 04_classification_*.ipynb (plusieurs modèles de Classification testés)
 
 👉 Le notebook d’exploration est optionnel.
 👉 Le notebook de preprocessing est obligatoire avant toute modélisation.
@@ -138,4 +139,33 @@ Les embeddings sont sauvegardés dans le dossier data/embeddings afin d’évite
 ### Top2Vec
 Environnement Python recommandé
 - Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.x**.  
-- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.  
+- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.
+
+## Topic Modeling et Classification
+
+Les étapes de Topic Modeling (`03_`) et de Classification (`04_`) sont liées par une étape d'annotation manuelle.
+
+**Important :**
+L'output des notebooks `03_topicmodeling` sert de base à l'annotation, qui produit ensuite l'input pour les notebooks `04_classification`.
+
+Cependant, **les données annotées nécessaires pour l'étape 4 sont déjà incluses dans le dépôt git.**
+
+Conséquences :
+- Vous **pouvez** exécuter les notebooks de classification (`04`) directement, **sans avoir exécuté** les notebooks de topic modeling (`03`).
+- Si vous relancez l'étape 3, vous ne pourrez pas utiliser directement vos résultats pour l'étape 4 sans refaire l'annotation manuelle.
+
+### Alternative : Annotation automatique (Weakly Supervised)
+
+Nous avons essayé une alternative au topic modeling qui est complètement automatique : une **annotation weakly-supervisée par regex**.
+
+Pour mettre en place cette alternative :
+1. Exécutez le notebook `03_Labellisation_Regex.ipynb`.
+2. La classification LogisticRegression est flexible. Dans la première cellule du notebook `04_classification_LogisticRegression.ipynb`, modifiez la variable `ENTRAINEMENT` :
+   ```python
+   ENTRAINEMENT = 'regex'
+   ```
+   Cela utilisera automatiquement le dataset annoté par regex pour cette classification.
+
+Ainsi, pour le classeur Logistic Regression, vous pouvez choisir l'un ou l'autre comme données d'entraînement :
+- **Topic Modeling** (annotation manuelle)
+- **Regex** (annotation automatique)
