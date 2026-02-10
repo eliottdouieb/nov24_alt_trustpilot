@@ -1,11 +1,21 @@
-Trust Pilot
+# Trust Pilot
 
-Projet de topic modeling et de classification de commentaires Trustpilot à partir de techniques NLP classiques et contextuelles.
+Projet de topic modeling et de classification de commentaires Trustpilot à partir de techniques NLP classiques et contextuelles
 ==============================
+
+## Objectif du projet
+Ce projet a pour objectif d'ajouter une nouvelle fonctionnalité au site Trustpilot : la possibilité de trier les commentaires d'une entreprise par thème.
+
+Pour cela, le projet s'effectue en plusieurs étapes :
+- Regrouper les commentaires par thèmes grâce au topic modeling.
+- Regrouper et nommer les topics obtenus à l'aide d'une annotation manuelle.
+- A partir des topics cohérents obtenus, labelliser les commentaires restants en utilisant un modèle de classification supervisée multilabel.
+- (Optionnel) A l'aide des données labellisées obtenues, créer un modèle de classification supervisée capable de prédire la catégorie d'un nouvel avis.
 
 ## Installation et mise en place
 
 1️. Cloner le dépôt
+
 ```bash
 git clone https://github.com/eliottdouieb/nov24_alt_trustpilot
 cd nov24_alt_trustpilot
@@ -36,7 +46,6 @@ Prérequis
 - Python ≥ 3.10 (3.11.9 recommandé)
 - (fortement recommandé) un environnement virtuel Python
 
-==============================
 
 ## Organisation du projet
 
@@ -48,9 +57,17 @@ Le projet est structuré autour de plusieurs notebooks Jupyter :
 - 04_classification_*.ipynb (plusieurs modèles de Classification testés)
 
 👉 Le notebook d’exploration est optionnel.
+
 👉 Le notebook de preprocessing est obligatoire avant toute modélisation.
 
 ## Exécution d'un notebook
+
+Création du kernel pour Jupyter :
+
+```bash
+python -m ipykernel install --user --name=venv --display-name "TrustPilot Venv"
+```
+
 Lancer Jupyter :
 
 ```bash
@@ -79,18 +96,12 @@ Une fois cette section exécutée, les autres parties peuvent être lancées dan
 
 Les sections suivantes peuvent être lancées dans n’importe quel ordre.
 
-Sections d’exploration
-Kinjal
-Analyse des taux de commentaires et de réponses selon la note + premiers traitements NLP.
+### Sections d’exploration
 
-Julie
-Répartition temporelle des commentaires (mois, saisons, années, tendances).
-
-Laurine
-Présence de réponse en fonction de la note et de la longueur des commentaires + analyse textuelle.
-
-Quentin
-Analyse de la longueur des commentaires vis-à-vis des notes et exploration lexicale.
+- Kinjal : Analyse des taux de commentaires et de réponses selon la note + premiers traitements NLP.
+- Julie : Répartition temporelle des commentaires (mois, saisons, années, tendances).
+- Laurine : Présence de réponse en fonction de la note et de la longueur des commentaires + analyse textuelle.
+- Quentin : Analyse de la longueur des commentaires vis-à-vis des notes et exploration lexicale.
 
 ## Preprocessing des données
 
@@ -136,23 +147,30 @@ Les embeddings sont sauvegardés dans le dossier data/embeddings afin d’évite
 
 ⚠️ Certaines cellules peuvent être longues à exécuter sans GPU, en particulier pour les modèles BERT.
 
-### Top2Vec
-Environnement Python recommandé
-- Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.9**.  
-- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.
+#### Téléchargement des modèles Word2Vec et FastText pré-entraînés
+
+Pour utiliser ces modèles, il faut d'abord les télécharger :
+- [Word2Vec](https://fauconnier.github.io/#data)
+- [Fasttext français binaire](https://fasttext.cc/docs/en/crawl-vectors.html)
 
 ## Topic Modeling et Classification
 
 Les étapes de Topic Modeling (`03_`) et de Classification (`04_`) sont liées par une étape d'annotation manuelle.
 
 **Important :**
-L'output des notebooks `03_topicmodeling` sert de base à l'annotation, qui produit ensuite l'input pour les notebooks `04_classification`.
+L'output des notebooks `03_topicmodeling` sert de base à l'annotation, qui produit ensuite l'input pour les notebooks `04_classification` (le code est disponible dans le notebook `04_classification_XGBoost`).
 
 Cependant, **les données annotées nécessaires pour l'étape 4 sont déjà incluses dans le dépôt git.**
 
 Conséquences :
 - Vous **pouvez** exécuter les notebooks de classification (`04`) directement, **sans avoir exécuté** les notebooks de topic modeling (`03`).
 - Si vous relancez l'étape 3, vous ne pourrez pas utiliser directement vos résultats pour l'étape 4 sans refaire l'annotation manuelle.
+
+### Top2Vec
+
+Environnement Python recommandé
+- Pour exécuter correctement le notebook, il est recommandé d'utiliser **Python 3.11.9**.  
+- Les versions plus récentes (ex: Python 3.13) peuvent provoquer des erreurs d'import ou d'installation du package `top2vec`.
 
 ### Alternative : Annotation automatique (Weakly Supervised)
 
@@ -169,3 +187,10 @@ Pour mettre en place cette alternative :
 Ainsi, pour le classeur Logistic Regression, vous pouvez choisir l'un ou l'autre comme données d'entraînement :
 - **Topic Modeling** (annotation manuelle)
 - **Regex** (annotation automatique)
+
+## Equipe du projet
+
+- Julie BOUTELET
+- Laurine CHARBONNIER
+- Quentin GEORGE
+- Kinjal KAPADIA
