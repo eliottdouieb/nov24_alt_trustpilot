@@ -44,7 +44,8 @@ Le projet est structuré autour de plusieurs notebooks Jupyter :
 
 - 01_exploration_de_donnees.ipynb
 - 02_preprocessing.ipynb
-- 03_modelisations_.ipynb (plusieurs approches testées)
+- 03_topicmodeling_*.ipynb (plusieurs approches de Topic Modeling testées)
+- 04_classification_*.ipynb (plusieurs modèles de Classification testés)
 
 👉 Le notebook d’exploration est optionnel.
 👉 Le notebook de preprocessing est obligatoire avant toute modélisation.
