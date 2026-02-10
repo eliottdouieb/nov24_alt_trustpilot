@@ -153,3 +153,19 @@ Cependant, **les données annotées nécessaires pour l'étape 4 sont déjà inc
 Conséquences :
 - Vous **pouvez** exécuter les notebooks de classification (`04`) directement, **sans avoir exécuté** les notebooks de topic modeling (`03`).
 - Si vous relancez l'étape 3, vous ne pourrez pas utiliser directement vos résultats pour l'étape 4 sans refaire l'annotation manuelle.
+
+### Alternative : Annotation automatique (Weakly Supervised)
+
+Nous avons essayé une alternative au topic modeling qui est complètement automatique : une **annotation weakly-supervisée par regex**.
+
+Pour mettre en place cette alternative :
+1. Exécutez le notebook `03_Labellisation_Regex.ipynb`.
+2. La classification LogisticRegression est flexible. Dans la première cellule du notebook `04_classification_LogisticRegression.ipynb`, modifiez la variable `ENTRAINEMENT` :
+   ```python
+   ENTRAINEMENT = 'regex'
+   ```
+   Cela utilisera automatiquement le dataset annoté par regex pour cette classification.
+
+Ainsi, pour le classeur Logistic Regression, vous pouvez choisir l'un ou l'autre comme données d'entraînement :
+- **Topic Modeling** (annotation manuelle)
+- **Regex** (annotation automatique)
