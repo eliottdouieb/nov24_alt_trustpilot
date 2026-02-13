@@ -119,6 +119,12 @@ Les deux sections suivantes doivent être lancées dans cet ordre :
 
 ### Preprocessing Général
 
+téléchargez le modèle linguistique français de spaCy :
+```bash
+python -m spacy download fr_core_news_md
+```
+Ce modèle est utilisé pour la lemmatisation et la suppression des stopwords.
+
 Cette partie réalise les opérations suivantes :
 - suppression des commentaires vides, trop courts ou dupliqués ;
 - nettoyage textuel (minuscules, suppression des URLs, emails, mentions, espaces inutiles) ;
