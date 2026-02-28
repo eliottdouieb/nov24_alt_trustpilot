@@ -19,13 +19,13 @@ st.write("Dans cette partie, nous préparons les commentaires avant d'entraîner
 st.header("1. Nettoyage des données")
 with st.expander("Voir les étapes de nettoyage"):
     st.write( """
-        - suppression des commentaires vides, trop courts ou dupliqués ;
-        - nettoyage textuel (minuscules, suppression des URLs, emails, mentions, espaces inutiles) ;
-        - détection et conservation uniquement des commentaires en français ;
-        - lemmatisation et suppression des stopwords linguistiques à l’aide de spaCy ;
-        - création de deux représentations distinctes du texte :
-        - texte avec contexte (pour les modèles BERT),
-        - texte sans contexte (pour les modèles statistiques et le topic modeling).
+    - suppression des commentaires vides, trop courts ou dupliqués     
+    - Suppression des URLs et emails  
+    - Mise en minuscules  
+    - Détection de la langue française  
+    - Lemmatisation avec SpaCy  
+    - Suppression des stopwords  
+    - Suppression des mots liés au produit (stopwords custom)
             """ )
 # Le modèle spaCy est chargé une seule fois grâce à `@st.cache_resource` afin d’optimiser les performances de l’application.
 # La fonctionnalité ner (reconnaissance des entités nommées) est désactivée car elle n’est pas nécessaire pour la classification.
@@ -69,20 +69,36 @@ def preprocess_spacy(text):
     ]
     return tokens
 
-default_text = df["Commentaire"].iloc[7]
-text = st.text_area(
-    "Exemple de commentaire",
-    value=default_text
-    )
+#default_text = df["Commentaire"].iloc[7]
+#text = st.text_area(
+#   "Exemple de commentaire",
+#    value=default_text
+#    )
 
+#st.subheader("Commentaire original")
+#st.write(text)
+st.info(f"Le dataset contient {len(df)} commentaires.")
+
+st.subheader("Choisir un commentaire du dataset")
+
+index = st.number_input(
+    "Sélectionnez l'index du commentaire",
+    min_value=0,
+    max_value=len(df)-1,
+    value=8
+)
+# Récupérer le commentaire
+text = df["Commentaire"].iloc[index]
+
+# Afficher le commentaire sélectionné
+st.subheader("Sélectionner le commentaire original dans le dataset.")
+st.write(text) 
+
+# Ensuite appliquer le preprocessing
 step1 = clean_text(text)
 tokens = preprocess_spacy(step1)
 step2 = " ".join(tokens)
-step3 = " ".join(
-    t for t in tokens if t not in STOPWORDS_CUSTOM
-)
-st.subheader("Commentaire original")
-st.write(text)
+step3 = " ".join([t for t in tokens if t not in STOPWORDS_CUSTOM]) 
 
 st.subheader("Après nettoyage regex")
 st.write(step1)
@@ -102,6 +118,8 @@ st.write(step3)
 #    df[["Commentaire", "clean_comment"]].head(5)
 #)
 
+
+text = df["Commentaire"].iloc[index]
 st.header("3. Transformation du texte en vecteurs (Embeddings)")
 st.write("""
 Après le nettoyage, les commentaires sont transformés en vecteurs numériques 
@@ -111,7 +129,7 @@ afin d’être utilisés par les modèles de machine learning.
 embeddings_data = {
     "Méthode": ["TF-IDF", "Word2Vec", "Sentence-BERT", "CamemBERT"],
     "Description": [
-        "Méthode statistique qui identifie les mots les plus importants dans un texte.",
+        "Méthode statistique qui donne plus d’importance aux mots spécifiques et moins d’importance aux mots fréquents dans le corpus.",
         "Modèle qui apprend les relations entre les mots.",
         "Modèle avancé qui comprend le sens global des phrases.",
         "Modèle BERT spécialisé pour le français."
