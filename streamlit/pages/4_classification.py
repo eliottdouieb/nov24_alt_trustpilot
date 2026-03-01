@@ -23,16 +23,16 @@ st.markdown("### Configuration")
 col1, col2 = st.columns(2)
 
 MODEL_OPTIONS = [
-    "Logistic Regression",
-    "XGBoost",
     "SVM",
     "KNN",
+    "Logistic Regression",
+    "XGBoost",
     "CamemBERT"
 ]
 
 DATA_OPTIONS = {
-    "Regex": "regex",
-    "Topic Modelling": "bertopic"
+    "Topic Modelling": "bertopic",
+    "Regex": "regex"
 }
 
 with col1:
@@ -76,7 +76,7 @@ def get_model_path(model_name, data_suffix):
         if is_regex:
             return MODELS_DIR / "classification/camembert/camembert_regex"
         else:
-            return MODELS_DIR / "classification/camembert/camembert_model"
+            return MODELS_DIR / "classification/camembert/camembert_valdataset"
     return None
 
 # --- Fonctions Backend ---
