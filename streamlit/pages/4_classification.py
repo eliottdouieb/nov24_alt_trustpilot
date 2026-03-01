@@ -59,9 +59,9 @@ def get_model_path(model_name, data_suffix):
             return MODELS_DIR / "classification/logistic_regression/logistic_regression.joblib"
     elif model_name == "XGBoost":
         if is_regex:
-            return MODELS_DIR / "classification/xgboost/xgboost_regex.pkl"
+            return MODELS_DIR / "classification/xgboost/xgb_regex.pkl"
         else:
-            return MODELS_DIR / "classification/xgboost/xgboost_model.pkl"
+            return MODELS_DIR / "classification/xgboost/xgb_model.pkl"
     elif model_name == "SVM":
         if is_regex:
             return MODELS_DIR / "classification/svm/svm_regex.pkl"
