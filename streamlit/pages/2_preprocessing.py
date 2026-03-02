@@ -15,6 +15,7 @@ DATA_DIR = PROJECT_ROOT / "data" / "raw"
 df = pd.read_csv(DATA_DIR / "reviews_trust.csv")
 
 st.title("Preprocessing")
+st.info(f"Dataset avant nettoyage : {len(df)} commentaires.")
 st.write("Dans cette partie, nous préparons les commentaires avant d'entraîner les modèles.")
 st.header("1. Nettoyage des données")
 with st.expander("Voir les étapes de nettoyage"):
@@ -27,6 +28,40 @@ with st.expander("Voir les étapes de nettoyage"):
     - Suppression des stopwords  
     - Suppression des mots liés au produit (stopwords custom)
             """ )
+
+def count_words(text):
+    text = re.sub(r'[^\w\s]', '', str(text))
+    return len(text.split())
+
+df = df.dropna(subset=["Commentaire"])
+df = df.drop_duplicates(subset=["Commentaire", "client"], keep="first")
+df = df[df["Commentaire"].apply(count_words) > 3].reset_index(drop=True)
+
+# Fonction de nettoyage 
+def clean_text(text):
+    # Gérer les Nan/float
+    if pd.isna(text):
+        return ""
+
+    text = str(text).lower().strip()
+    text = re.sub(r"(http|www)\S+", "", text) # URLs
+    text = re.sub(r"\S+@\S+", "", text) # emails
+    text = re.sub(r"(@|#)\w+", "", text) # mentions @ et #
+    text = re.sub(r"\s+", " ", text).strip() # espaces multiples, sauts de lignes , tabulations
+    return text
+df["clean_comment"] = df["Commentaire"].apply(clean_text)
+
+# Suppression des commentaires pas en français
+DetectorFactory.seed = 42
+
+def is_french(text):
+    try:
+        return detect(text) == "fr"
+    except LangDetectException:
+        return False
+
+df = df[df["clean_comment"].apply(is_french)].reset_index(drop=True)
+
 # Le modèle spaCy est chargé une seule fois grâce à `@st.cache_resource` afin d’optimiser les performances de l’application.
 # La fonctionnalité ner (reconnaissance des entités nommées) est désactivée car elle n’est pas nécessaire pour la classification.
 @st.cache_resource
@@ -44,18 +79,7 @@ st.write("""
 Cette section montre l’impact concret des différentes étapes 
 de preprocessing sur un commentaire.
 """)
-# Fonction de nettoyage 
-def clean_text(text):
-    # Gérer les Nan/float
-    if pd.isna(text):
-        return ""
 
-    text = str(text).lower().strip()
-    text = re.sub(r"(http|www)\S+", "", text)
-    text = re.sub(r"\S+@\S+", "", text)
-    text = re.sub(r"(@|#)\w+", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
 
 # Nous utilisons la lemmatisation pour ramener les mots à leur forme de base.
 # Les stopwords standards sont supprimés automatiquement par spaCy.
@@ -69,20 +93,10 @@ def preprocess_spacy(text):
     ]
     return tokens
 
-#default_text = df["Commentaire"].iloc[7]
-#text = st.text_area(
-#   "Exemple de commentaire",
-#    value=default_text
-#    )
-
-#st.subheader("Commentaire original")
-#st.write(text)
-st.info(f"Le dataset contient {len(df)} commentaires.")
-
 st.subheader("Choisir un commentaire du dataset")
 
 index = st.number_input(
-    "Sélectionnez l'index du commentaire",
+    "Veuillez saisir un numéro d'index pour afficher dynamiquement un commentaire du dataset.",
     min_value=0,
     max_value=len(df)-1,
     value=8
@@ -91,35 +105,30 @@ index = st.number_input(
 text = df["Commentaire"].iloc[index]
 
 # Afficher le commentaire sélectionné
-st.subheader("Sélectionner le commentaire original dans le dataset.")
-st.write(text) 
+#st.subheader("Sélectionner le commentaire original dans le dataset.")
+#st.write(text) 
 
 # Ensuite appliquer le preprocessing
+original = df["Commentaire"].iloc[index]
 step1 = clean_text(text)
 tokens = preprocess_spacy(step1)
 step2 = " ".join(tokens)
 step3 = " ".join([t for t in tokens if t not in STOPWORDS_CUSTOM]) 
+st.markdown("Transformation progressive du commentaire :")
 
-st.subheader("Après nettoyage regex")
-st.write(step1)
+with st.expander("1️⃣ Texte original"):
+    st.write(original)
 
-st.subheader("Après lemmattisation + suppression stopwords")
-st.write(step2)
+with st.expander("2️⃣ Après nettoyage regex"):
+    st.write(step1)
 
-st.subheader("Après suppression stopwords custom")
-st.write(step3) 
+with st.expander("3️⃣ Après lemmatisation + suppression stopwords"):
+    st.write(step2)
 
-#Création de la colonne nettoyée 
-#df["clean_comment"] = df["Commentaire"].apply(clean_text)
+with st.expander("4️⃣ Après suppression stopwords personnalisés"):
+    st.write(step3)
 
-#st.subheader("Exemple de nettoyage sur le dataset")
-
-#st.dataframe(
-#    df[["Commentaire", "clean_comment"]].head(5)
-#)
-
-
-text = df["Commentaire"].iloc[index]
+st.info(f"Dataset après nettoyage : {len(df)} commentaires.")
 st.header("3. Transformation du texte en vecteurs (Embeddings)")
 st.write("""
 Après le nettoyage, les commentaires sont transformés en vecteurs numériques 
