@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 st.set_page_config(
@@ -13,7 +14,7 @@ st.title("Topic modeling")
 
 st.text("Nous avons testé plusieurs modèles de topic modeling pour extraire les thèmes principaux des avis clients.")
 
-st.subheader("Comparaison des modèles")
+st.header("Comparaison des modèles")
 
 modeles = ["BERTopic", "Top2Vec", "CTM", "LDA"]
 diversite = [0.78, 0.18, 0.80, 0.98]
@@ -29,7 +30,7 @@ st.dataframe(df)
 
 st.divider()
 
-st.subheader("Résultats par modèle")
+st.header("Résultats par modèle")
 
 @st.cache_data
 def load_lda():
@@ -86,12 +87,12 @@ def load_resultat_final():
     return topics_df, docs_df, dataset_avis, dataset_phrases
 
 def run_resultat_final():
-    st.subheader("Résultat final")
+    st.header("Résultat final")
     st.text("Après plusieurs itérations et ajustements, nous avons obtenu un modèle BERTopic final qui extrait des topics plus cohérents et pertinents. Nous avons utilisé une approche de prétraitement des données plus rigoureuse, ainsi que des techniques de réduction de dimensionnalité pour améliorer la qualité des topics extraits.")
 
     topics_df, docs_df, dataset_avis, dataset_phrases = load_resultat_final()
 
-    st.subheader("Affichage des données")
+    st.header("Affichage des données")
 
     with st.expander(f"Tableau des topics ({len(topics_df)} topics)"):
         st.dataframe(topics_df[["Topic", "Count", "Representation", "Representative_Docs", "Catégorie"]])
@@ -107,99 +108,124 @@ def run_resultat_final():
     
     st.divider()
     
-    # ---------- REPARTITION CLASSES ----------
-    st.subheader("Répartition des classes")
+    # ---------- STATISTIQUES ----------
+    
+    st.header("Statistiques")
+    
+    valid_cats = ["qualité produit", "service livraison", "service client"]
 
-    topic_to_cat = dict(zip(topics_df["Topic"], topics_df["Catégorie"]))
+    topic_to_cat_map = dict(zip(topics_df["Topic"], topics_df["Catégorie"]))
 
-    valid_labels = ["qualité produit", "service livraison", "service client"]
+    df_temp = docs_df.copy()
+    df_temp["categorie_detectee"] = df_temp["topics"].map(topic_to_cat_map)
 
-    docs_df_copy = docs_df.copy()
-    docs_df_copy["Catégorie"] = docs_df_copy["topics"].map(topic_to_cat)
-
-    docs_df_copy["Label final"] = docs_df_copy["Catégorie"].apply(
-        lambda x: x if x in valid_labels else "aucun label"
+    df_temp["label_final"] = df_temp["categorie_detectee"].apply(
+        lambda x: x if x in valid_cats else None
     )
+    
+    labels_par_commentaire = (
+        df_temp
+        .groupby("comment_id")["label_final"]
+        .apply(lambda x: list(set(x.dropna())))
+    )
+    
+    st.subheader("Statistiques par commentaires")
+    
+    nb_commentaires = len(labels_par_commentaire)
 
-    labels_order = [
-        "qualité produit",
-        "service livraison",
-        "service client",
-        "aucun label"
-    ]
+    commentaires_classes = labels_par_commentaire.apply(len).gt(0).sum()
 
-    # ---------- PHRASES ----------
-    phrase_counts = (
-        docs_df_copy["Label final"]
+    taux_couverture = (commentaires_classes / nb_commentaires) * 100
+    
+    m1, m2, m3, m4 = st.columns(4)
+
+    m1.metric("Total des commentaires", f"{nb_commentaires:,}".replace(",", " "))
+    m2.metric("Commentaires classés", f"{commentaires_classes:,}".replace(",", " "))
+    m3.metric("Commentaires non classés", f"{nb_commentaires - commentaires_classes:,}".replace(",", " "))
+    m4.metric("Taux de couverture", f"{taux_couverture:.1f}%")
+    
+    st.subheader("Statistiques par phrases")
+    
+    total_phrases = len(df_temp)
+
+    phrases_classees = df_temp["label_final"].notna().sum()
+
+    couverture_phrases = (phrases_classees / total_phrases) * 100
+
+    p1, p2, p3, p4 = st.columns(4)
+
+    p1.metric("Total des phrases", f"{total_phrases:,}".replace(",", " "))
+    p2.metric("Phrases classées", f"{phrases_classees:,}".replace(",", " "))
+    p3.metric("Phrases non classées", f"{total_phrases - phrases_classees:,}".replace(",", " "))
+    p4.metric("Taux de couverture", f"{couverture_phrases:.1f}%")
+    
+    st.subheader("Répartition des catégories détectées")
+
+    flat_labels = labels_par_commentaire.explode()
+
+    distribution_labels = (
+        flat_labels
         .value_counts()
-        .reindex(labels_order, fill_value=0)
+        .reindex(valid_cats, fill_value=0)
+        .reset_index()
     )
 
-    # ---------- COMMENTAIRES ----------
-    comment_labels = (
-        docs_df_copy
-        .groupby("comment_id")["Label final"]
-        .apply(lambda x: set(x))
+    distribution_labels.columns = ["Catégorie", "Nombre de commentaires"]
+    
+    phrase_labels = (
+        df_temp["label_final"]
+        .dropna()
+        .value_counts()
+        .reindex(valid_cats, fill_value=0)
+        .reset_index()
     )
 
-    counts = {
-        "qualité produit": 0,
-        "service livraison": 0,
-        "service client": 0,
-        "aucun label": 0
-    }
-
-    for labels in comment_labels:
-        valid = [l for l in labels if l != "aucun label"]
-
-        if len(valid) == 0:
-            counts["aucun label"] += 1
-        else:
-            for l in valid:
-                counts[l] += 1
-
-    comment_counts = pd.Series(counts).reindex(labels_order)
-
-    # ---------- ECHELLE COMMUNE ----------
-    max_y = max(phrase_counts.max(), comment_counts.max()) * 1.1
-
+    phrase_labels.columns = ["Catégorie", "Nombre de phrases"]
+    
     col1, col2 = st.columns(2)
-
-    # ---------- GRAPHIQUE PHRASES ----------
+    
     with col1:
-        st.markdown("##### Répartition des classes (phrases)")
+        fig_bar = px.bar(
+            distribution_labels,
+            x="Nombre de commentaires",
+            y="Catégorie",
+            orientation="h",
+            text_auto=True,
+            title="Nombre de commentaires par catégorie",
+            color="Catégorie",
+            color_discrete_sequence=["#1f77b4", "#ff7f0e", "#2ca02c"]
+        )
 
-        fig, ax = plt.subplots()
-        phrase_counts.plot(kind="bar", ax=ax)
+        fig_bar.update_layout(
+            showlegend=False,
+            yaxis_title=None
+        )
 
-        ax.set_ylim(0, max_y)
-        ax.set_xlabel("Label")
-        ax.set_ylabel("Nombre de phrases")
-        ax.set_title("Distribution des labels - phrases")
-
-        st.pyplot(fig)
-
-    # ---------- GRAPHIQUE COMMENTAIRES ----------
+        st.plotly_chart(fig_bar, use_container_width=True)
+        
     with col2:
-        st.markdown("##### Répartition des classes (commentaires)")
+        fig_bar_phrases = px.bar(
+            phrase_labels,
+            x="Nombre de phrases",
+            y="Catégorie",
+            orientation="h",
+            text_auto=True,
+            title="Nombre de phrases par catégorie",
+            color="Catégorie",
+            color_discrete_sequence=["#1f77b4", "#ff7f0e", "#2ca02c"]
+        )
 
-        fig2, ax2 = plt.subplots()
-        comment_counts.plot(kind="bar", ax=ax2)
+        fig_bar_phrases.update_layout(
+            showlegend=False,
+            yaxis_title=None
+        )
 
-        ax2.set_ylim(0, max_y)
-        ax2.set_xlabel("Label")
-        ax2.set_ylabel("Nombre de commentaires")
-        ax2.set_title("Distribution des labels - commentaires")
-
-        st.pyplot(fig2)
-
-        st.info("Un commentaire peut être associé à plusieurs labels à la fois.")
-        
-        
+        st.plotly_chart(fig_bar_phrases, use_container_width=True)
+    
     st.divider()
     
     # ---------- EXPLORATION TOPIC ----------
-    st.subheader("Explorer un topic")
+    st.header("Explorer un topic")
 
     topic_id = st.selectbox(
         "Choisir un topic",
@@ -221,7 +247,7 @@ def run_resultat_final():
     else:
         st.markdown("**Label final :** Aucun label")
 
-    st.markdown("##### Phrases associées")
+    st.subheader("Phrases associées")
 
     subset = docs_df[docs_df.topics == topic_id]
 
@@ -233,7 +259,7 @@ def run_resultat_final():
     st.divider()
 
     # ---------- EXPLORATION COMMENTAIRE ----------
-    st.subheader("Explorer un commentaire")
+    st.header("Explorer un commentaire")
 
     comment_id = st.selectbox(
         "Choisir un commentaire",
@@ -262,7 +288,7 @@ def run_resultat_final():
     .unique()
     )
     
-    st.markdown("##### Catégories détectées")
+    st.subheader("Catégories détectées")
     
     st.markdown("\n".join(f"- {item}" for item in cats))
     
@@ -272,14 +298,14 @@ def run_resultat_final():
     .unique()
     )
     
-    st.markdown("##### Labels finaux")
+    st.subheader("Labels finaux")
 
     if len(labels_finaux) > 0:
         st.markdown("\n".join(f"- {item}" for item in labels_finaux))
     else:
         st.markdown("Aucun label")
         
-    st.markdown("##### Phrases du commentaire")
+    st.subheader("Phrases du commentaire")
 
     st.dataframe(
         comment_subset[["sentence", "Catégorie", "Label final", "star"]],
@@ -306,7 +332,7 @@ if st.button("Valider"):
     st.session_state.selected_model = model
     
 if st.session_state.selected_model == "LDA":
-    st.subheader("LDA (Latent Dirichlet Allocation)")
+    st.header("LDA (Latent Dirichlet Allocation)")
     st.text("LDA est un modèle de topic modeling probabiliste qui suppose que les documents sont des mélanges de topics et que les topics sont des mélanges de mots. Il utilise une approche bayésienne pour inférer les distributions de topics et de mots.")
     
     df_LDA, LDA_topic_sizes = load_lda()
@@ -314,7 +340,7 @@ if st.session_state.selected_model == "LDA":
     st.dataframe(df_LDA)
     st.image(LDA_topic_sizes)
 elif st.session_state.selected_model == "Top2Vec":
-    st.subheader("Top2Vec")
+    st.header("Top2Vec")
     st.text("Top2Vec est un modèle de topic modeling qui utilise des embeddings de mots pour regrouper les documents similaires en topics. Il est capable de trouver des topics de manière non supervisée et peut gérer de grandes quantités de données.")
     
     df_Top2Vec, Top2Vec_topic_sizes, Top2Vec_topic_proportion = load_top2vec()
@@ -323,7 +349,7 @@ elif st.session_state.selected_model == "Top2Vec":
     st.image(Top2Vec_topic_sizes)
     st.image(Top2Vec_topic_proportion)
 elif st.session_state.selected_model == "CTM":
-    st.subheader("CTM (Combined Topic Model)")
+    st.header("CTM (Combined Topic Model)")
     st.text("CTM est un modèle de topic modeling qui combine les avantages de LDA et de Top2Vec. Il utilise des embeddings de mots pour regrouper les documents similaires en topics, tout en conservant une structure probabiliste pour inférer les distributions de topics et de mots.")
     
     df_CTM, CTM_topic_sizes = load_ctm()
@@ -331,7 +357,7 @@ elif st.session_state.selected_model == "CTM":
     st.dataframe(df_CTM)
     st.image(CTM_topic_sizes)
 elif st.session_state.selected_model == "BERTopic":
-    st.subheader("BERTopic")
+    st.header("BERTopic")
     st.text("BERTopic est un modèle de topic modeling basé sur des embeddings de phrases. Il utilise des techniques de réduction de dimensionnalité pour regrouper les avis similaires en topics.")
     
     df_BERTopic, BERTopic_topic_sizes, BERTopic_word_scores, BERTopic_hierarchy = load_bertopic()
