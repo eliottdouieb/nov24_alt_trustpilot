@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 Prérequis
 - Python ≥ 3.10 (3.11.9 recommandé)
-- (fortement recommandé) un environnement virtuel Python
+- un environnement virtuel Python (fortement recommandé)
 
 
 ## Organisation du projet
