@@ -9,10 +9,15 @@ st.set_page_config(
     page_title="Projet Trustpilot",
     layout="wide"
 )
-PROJECT_ROOT = Path.cwd().parent
-DATA_DIR = PROJECT_ROOT / "data" / "raw"
 
-df = pd.read_csv(DATA_DIR / "reviews_trust.csv")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+DATA_DIR = PROJECT_ROOT / "data" / "raw"
+FILE_PATH = DATA_DIR / "reviews_trust.csv"
+
+if not FILE_PATH.exists():
+    st.error(f"Fichier introuvable : {FILE_PATH}")
+else:
+    df = pd.read_csv(FILE_PATH)
 
 st.title("Preprocessing")
 st.info(f"Dataset avant nettoyage : {len(df)} commentaires.")
@@ -147,5 +152,3 @@ embeddings_data = {
 df_embeddings = pd.DataFrame(embeddings_data)
 
 st.table(df_embeddings)
-
-
