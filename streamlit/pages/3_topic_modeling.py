@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 from PIL import Image
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -32,39 +33,43 @@ st.divider()
 
 st.header("Résultats par modèle")
 
+UTILS_DIR = Path(__file__).resolve().parent.parent / "utils"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+MODEL_DIR = Path(__file__).resolve().parent.parent.parent / "models"
+
 @st.cache_data
 def load_lda():
-    df_LDA = pd.read_csv("./utils/LDA_topic_words.csv")
-    LDA_topic_sizes = Image.open("./utils/LDA_topic_sizes.png")
+    df_LDA = pd.read_csv(UTILS_DIR / "LDA_topic_words.csv")
+    LDA_topic_sizes = Image.open(UTILS_DIR / "LDA_topic_sizes.png")
     return df_LDA, LDA_topic_sizes
 
 @st.cache_data
 def load_top2vec():
-    df_Top2Vec = pd.read_csv("./utils/Top2Vec_topic_words.csv")
-    Top2Vec_topic_sizes = Image.open("./utils/Top2Vec_topic_sizes.png")
-    Top2Vec_topic_proportion = Image.open("./utils/Top2Vec_topic_proportion.png")
+    df_Top2Vec = pd.read_csv(UTILS_DIR / "Top2Vec_topic_words.csv")
+    Top2Vec_topic_sizes = Image.open(UTILS_DIR / "Top2Vec_topic_sizes.png")
+    Top2Vec_topic_proportion = Image.open(UTILS_DIR / "Top2Vec_topic_proportion.png")
     return df_Top2Vec, Top2Vec_topic_sizes, Top2Vec_topic_proportion
 
 @st.cache_data
 def load_ctm():
-    df_CTM = pd.read_csv("./utils/CTM_topic_words.csv")
-    CTM_topic_sizes = Image.open("./utils/CTM_topic_sizes.png")
+    df_CTM = pd.read_csv(UTILS_DIR / "CTM_topic_words.csv")
+    CTM_topic_sizes = Image.open(UTILS_DIR / "CTM_topic_sizes.png")
     return df_CTM, CTM_topic_sizes
 
 @st.cache_data
 def load_bertopic():
-    df_BERTopic = pd.read_csv("./utils/BERTopic_topic_words.csv")
-    BERTopic_topic_sizes = Image.open("./utils/BERTopic_topic_sizes.png")
-    BERTopic_word_scores = Image.open("./utils/BERTopic_word_scores.png")
-    BERTopic_hierarchy = Image.open("./utils/BERTopic_hierarchy.png")
+    df_BERTopic = pd.read_csv(UTILS_DIR / "BERTopic_topic_words.csv")
+    BERTopic_topic_sizes = Image.open(UTILS_DIR / "BERTopic_topic_sizes.png")
+    BERTopic_word_scores = Image.open(UTILS_DIR / "BERTopic_word_scores.png")
+    BERTopic_hierarchy = Image.open(UTILS_DIR / "BERTopic_hierarchy.png")
     return df_BERTopic, BERTopic_topic_sizes, BERTopic_word_scores, BERTopic_hierarchy
 
 @st.cache_data
 def load_resultat_final():
-    topics_df = pd.read_excel("../data/labelled_topics/topics_top_words_phrases_annoté.xlsx")
-    docs_df = pd.read_csv("../models/topic_modeling/bertopic/output/reviews_phrases_with_topics_final.csv")
-    dataset_avis = pd.read_csv("../data/labelled_topics/dataset_avis.csv")
-    dataset_phrases = pd.read_csv("../data/labelled_topics/dataset_phrases.csv")
+    topics_df = pd.read_excel(DATA_DIR / "labelled_topics/topics_top_words_phrases_annoté.xlsx")
+    docs_df = pd.read_csv(MODEL_DIR / "topic_modeling/bertopic/output/reviews_phrases_with_topics_final.csv")
+    dataset_avis = pd.read_csv(DATA_DIR / "labelled_topics/dataset_avis.csv")
+    dataset_phrases = pd.read_csv(DATA_DIR / "labelled_topics/dataset_phrases.csv")
     
     # Normalisation des catégories
     replace_map = {
