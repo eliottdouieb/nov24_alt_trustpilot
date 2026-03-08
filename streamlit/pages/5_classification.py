@@ -215,6 +215,8 @@ if result_mode == "Phrase personnalisée":
         else:
             if selected_model_name in ["KNN", "SVM"] and tfidf_vectorizer is not None:
                 embedding = tfidf_vectorizer.transform([user_input])
+            elif selected_model_name == "Logistic Regression":
+                embedding = embedder.encode([user_input], normalize_embeddings=True)
             else:
                 embedding = embedder.encode([user_input])
                 
@@ -296,6 +298,13 @@ elif result_mode == "Arène des modèles":
                             preds = t_model.predict(emb_sparse)[0]
                         else:
                             preds = [0, 0, 0]
+                    elif m_name == "Logistic Regression":
+                        t_embedder = load_embedding_model(m_name)
+                        if t_embedder is not None:
+                            embeddings = t_embedder.encode([user_input], normalize_embeddings=True)
+                            preds = t_model.predict(embeddings)[0]
+                        else:
+                            preds = [0, 0, 0]
                     else:
                         t_embedder = load_embedding_model(m_name)
                         if t_embedder is not None:
@@ -361,6 +370,8 @@ elif result_mode in ["100 avis annotés (Test)", "Avis non vus"]:
                     with st.spinner(f"Encodage de {len(texts)} textes..."):
                         if selected_model_name in ["KNN", "SVM"] and tfidf_vectorizer is not None:
                             embeddings = tfidf_vectorizer.transform(texts)
+                        elif selected_model_name == "Logistic Regression":
+                            embeddings = embedder.encode(texts, normalize_embeddings=True)
                         else:
                             embeddings = embedder.encode(texts)
                     predictions = clf.predict(embeddings)
@@ -452,7 +463,10 @@ if st.checkbox("Activer la comparaison (Peut être lent)"):
                         embedder = load_embedding_model(m_name)
                         if embedder is not None:
                             if m_name not in embedder_cache:
-                                embedder_cache[m_name] = embedder.encode(texts)
+                                if m_name == "Logistic Regression":
+                                    embedder_cache[m_name] = embedder.encode(texts, normalize_embeddings=True)
+                                else:
+                                    embedder_cache[m_name] = embedder.encode(texts)
                             embeddings = embedder_cache[m_name]
                             preds = t_model.predict(embeddings)
                         else:
