@@ -163,6 +163,5 @@ cython_debug/
 .vscode/
 
 # Folders
-models/
-data/processed/
-data/embeddings/
+# data/processed/
+# data/embeddings/
