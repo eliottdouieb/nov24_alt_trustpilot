@@ -1,3 +1,5 @@
+from xml.parsers.expat import model
+
 import streamlit as st
 import pandas as pd
 import joblib
@@ -8,6 +10,7 @@ from sklearn.metrics import classification_report, f1_score, confusion_matrix, p
 import plotly.express as px
 import plotly.figure_factory as ff
 from transformers import CamembertForSequenceClassification, CamembertTokenizer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import scipy.special
 st.set_page_config(
@@ -101,8 +104,8 @@ def load_model(path, model_name):
     
     if model_name == "CamemBERT":
         try:
-            model = CamembertForSequenceClassification.from_pretrained(path)
-            tokenizer = CamembertTokenizer.from_pretrained(path)
+            model = AutoModelForSequenceClassification.from_pretrained(path)
+            tokenizer = AutoTokenizer.from_pretrained(path)
             return (model, tokenizer)
         except Exception as e:
             st.error(f"Erreur lors du chargement de CamemBERT: {e}")
@@ -157,15 +160,22 @@ def predict_camembert(model_tuple, texts):
     model, tokenizer = model_tuple
     inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True, max_length=256)
     
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+
     model.eval()
     with torch.no_grad():
         logits = model(**inputs).logits
     
     probs = torch.sigmoid(logits)
     
+    probs_cpu = probs.cpu()
+
     # Seuil à 0.5
-    preds = (probs > 0.5).int().numpy()
-    return preds, probs.numpy()
+    preds = (probs_cpu > 0.5).int().numpy()
+    return preds, probs_cpu.numpy()
 
 # --- Logique Principale ---
 
