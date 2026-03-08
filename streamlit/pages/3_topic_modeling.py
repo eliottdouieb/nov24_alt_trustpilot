@@ -99,16 +99,16 @@ def run_resultat_final():
 
     st.header("Affichage des données")
 
-    with st.expander(f"Tableau des topics ({len(topics_df)} topics)"):
+    with st.expander(f"Tableau des topics"):
         st.dataframe(topics_df[["Topic", "Count", "Representation", "Representative_Docs", "Catégorie"]])
     
-    with st.expander(f"Tableau des phrases avec topics ({len(docs_df)} phrases)"):
+    with st.expander(f"Tableau des phrases avec topics"):
         st.dataframe(docs_df[["comment_id", "Commentaire", "sentence", "topics"]])
     
-    with st.expander(f"Tableau des avis annotés ({len(dataset_avis)} avis)"):
+    with st.expander(f"Tableau des avis annotés"):
         st.dataframe(dataset_avis[["comment_id", "Commentaire", "clean_comment", "qualité produit", "service livraison", "service client"]])
     
-    with st.expander(f"Tableau des phrases annotées ({len(dataset_phrases)} phrases)"):
+    with st.expander(f"Tableau des phrases annotées"):
         st.dataframe(dataset_phrases[["comment_id", "Commentaire", "clean_comment", "sentence", "topics", "Catégorie", "qualité produit", "service livraison", "service client"]])
     
     st.divider()
