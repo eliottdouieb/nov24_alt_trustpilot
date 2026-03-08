@@ -16,7 +16,6 @@ st.write("Ce projet s’inscrit dans le domaine du **Machine Learning appliqué 
 
 st.write("Notre objectif est de concevoir un **modèle de classification automatique** des avis publiés sur Trustpilot, afin d’en extraire des informations utiles.")
 
-
 st.write("""
 Concrètement, nous cherchons à identifier automatiquement les **thèmes évoqués dans chaque avis** (ex: service client, livraison, qualité des produits) pour renforcer la transparence et la lisibilité des notes d’entreprises.
 """)
