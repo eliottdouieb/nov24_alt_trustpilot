@@ -163,6 +163,8 @@ def predict_camembert(model_tuple, texts):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
+    OPTIMIZED_THRESHOLDS = [0.26, 0.44, 0.23]
+
     inputs = {k: v.to(device) for k, v in inputs.items()}
 
     model.eval()
@@ -171,11 +173,13 @@ def predict_camembert(model_tuple, texts):
     
     probs = torch.sigmoid(logits)
     
-    probs_cpu = probs.cpu()
+    probs_cpu = probs.cpu().numpy()
 
-    # Seuil à 0.5
-    preds = (probs_cpu > 0.5).int().numpy()
-    return preds, probs_cpu.numpy()
+    preds = np.zeros_like(probs_cpu, dtype=int)
+    for i, t in enumerate(OPTIMIZED_THRESHOLDS):
+        preds[:, i] = (probs_cpu[:, i] > t).astype(int)
+        
+    return preds, probs_cpu
 
 # --- Logique Principale ---
 
