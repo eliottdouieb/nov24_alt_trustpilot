@@ -248,7 +248,7 @@ if result_mode == "Phrase personnalisée":
                 if is_active:
                     st.success("OUI")
                 else:
-                    st.markdown(":heavy_minus_sign: NON")
+                    st.error("NON")
                 
                 if proba is not None:
                     st.progress(float(proba[i]))
