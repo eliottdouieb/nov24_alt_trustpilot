@@ -99,7 +99,7 @@ index = st.number_input(
     "Veuillez saisir un numéro d'index pour afficher dynamiquement un commentaire du dataset.",
     min_value=0,
     max_value=len(df)-1,
-    value=8
+    value=7
 )
 # Récupérer le commentaire
 text = df["Commentaire"].iloc[index]
