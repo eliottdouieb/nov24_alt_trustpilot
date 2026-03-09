@@ -316,11 +316,6 @@ def run_resultat_final():
         comment_subset[["sentence", "Catégorie", "Label final", "star"]],
         width='stretch'
     )
-    
-    
-    # AFFICHER LA REPARTITION DES LABELS FINAUX DANS LE DATASET
-    # AFFICHER LE LABEL FINAL DANS L'EXPLORATION D'UN COMMENTAIRE EN PLUS DE LA CATEGORIE
-
 
 
 
@@ -352,7 +347,7 @@ elif st.session_state.selected_model == "Top2Vec":
     
     st.dataframe(df_Top2Vec)
     st.image(Top2Vec_topic_sizes)
-    st.image(Top2Vec_topic_proportion)
+    # st.image(Top2Vec_topic_proportion)
 elif st.session_state.selected_model == "CTM":
     st.header("CTM (Combined Topic Model)")
     st.text("CTM est un modèle de topic modeling qui combine les avantages de LDA et de Top2Vec. Il utilise des embeddings de mots pour regrouper les documents similaires en topics, tout en conservant une structure probabiliste pour inférer les distributions de topics et de mots.")
@@ -369,8 +364,8 @@ elif st.session_state.selected_model == "BERTopic":
     
     st.dataframe(df_BERTopic)
     st.image(BERTopic_topic_sizes)
-    st.image(BERTopic_word_scores)
-    st.image(BERTopic_hierarchy)
+    # st.image(BERTopic_word_scores)
+    # st.image(BERTopic_hierarchy)
 
 elif st.session_state.selected_model == "Résultat final":
     run_resultat_final()
