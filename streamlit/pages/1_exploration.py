@@ -22,12 +22,21 @@ DATA_PATH = BASE_DIR / "data" / "raw" / "reviews_trust.csv"
 
 df = pd.read_csv(DATA_PATH)
 
+# AFFICHER UN HEAD AVEC LES PREMIERES LIGNES DU DATASET
+st.title(f"1. Affichage du dataset")
+st.dataframe(df.head())
+
+counts = df["company"].value_counts().reset_index()
+counts.columns = ["company", "count"]
+
+st.dataframe(counts)
+
 # DIAGRAMME NBR COMMENTAIRES PAR NOTE
 # Comptage des avis par note
 counts = df["star"].value_counts().sort_index()
 total_comments = counts.sum()
 
-st.title(f"Répartition du nombre de commentaires par note (Total = {total_comments})")
+st.title(f"2. Répartition du nombre de commentaires par note (Total = {total_comments})")
 
 # Création du graphique
 fig, ax = plt.subplots()
@@ -40,7 +49,7 @@ ax.set_title("")  # titre vide car déjà dans st.title
 st.pyplot(fig)
 
 # ANALYSE DES WORDCLOUDS PAR NOTE
-st.title("Analyse des WordClouds par note")
+st.title("3. Analyse des WordClouds par note")
 
 #FRENCH STOPWORDS
 def ensure_nltk_resource(resource):
@@ -111,7 +120,7 @@ def clean_text(text):
 df["clean_comment"] = df["Commentaire"].apply(clean_text)
 
 
-st.title("Analyse des n-grams et répartition des notes")
+st.title("4. Analyse des n-grams et répartition des notes")
 stop_words = set(FRENCH_STOPWORDS)
 
 # --- Étape 1 : Calcul des top n-grams ---
@@ -160,7 +169,7 @@ else:
 
 # DIAGRAMME LONGUEUR MOYENNE DES COMMENTAIRES
 
-st.title("Longueur moyenne des commentaires par note")
+st.title("5. Longueur moyenne des commentaires par note")
 
 # Nettoyage des données
 df_clean = df.dropna(subset=["Commentaire"]).copy()
