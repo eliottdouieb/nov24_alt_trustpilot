@@ -24,6 +24,26 @@ st.write("""
 Cette catégorisation aiderait les utilisateurs à comprendre dans quels domaines une entreprise excelle ou rencontre des difficultés, et permettrait aux entreprises de cibler plus efficacement leurs axes d’amélioration.
 """)
 
+st.write("""
+Le dataset fourni n'étant pas annoté pour entraîner un modèle sur cette tâche, notre premier objectif est d'obtenir un dataset entièrement labellisé avec des thématiques.
+""")
+
+st.write("""
+Pour cela, nous avons utilisé le topic modeling pour identifier les principales thématiques et créer des clusters, que nous avons ensuite annotés manuellement.
+""")
+
+st.write("""
+Pour cela, nous avons utilisé le topic modeling pour identifier les principales thématiques et créer des clusters, que nous avons ensuite annotés manuellement.
+""")
+
+st.write("""
+Les clusters homogènes ont été regroupés en trois thématiques : qualité produit, service livraison, service client.
+""")
+
+st.write("""
+Enfin, nous avons utilisé les avis annotés à l'aide du topic modeling pour entraîner un modèle de classification multi-label dont l'objectif est d'annoter les avis provenant des clusters hétérogènes.
+""")
 # Another section
 st.header("Groupe Projet")
 st.write("Julie Boutelet - Laurine Charbonnier - Quentin Georges - Kinjal Kapadia")
+
