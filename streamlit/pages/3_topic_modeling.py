@@ -323,14 +323,15 @@ def run_resultat_final():
 
 cols = st.columns(3)
 with cols[0]:
-    model = st.selectbox("Sélectionnez un modèle de topic modeling", ("LDA", "Top2Vec", "CTM", "BERTopic", "Résultat final"))
+    st.session_state.selected_model = st.selectbox(
+        "Sélectionnez un modèle de topic modeling", 
+        ("LDA", "Top2Vec", "CTM", "BERTopic", "Résultat final"), 
+        index=4
+    )
 
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-if st.button("Valider"):
-    st.session_state.selected_model = model
-    
 if st.session_state.selected_model == "LDA":
     st.header("LDA (Latent Dirichlet Allocation)")
     st.text("LDA est un modèle de topic modeling probabiliste qui suppose que les documents sont des mélanges de topics et que les topics sont des mélanges de mots. Il utilise une approche bayésienne pour inférer les distributions de topics et de mots.")
