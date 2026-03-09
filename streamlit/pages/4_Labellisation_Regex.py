@@ -259,4 +259,4 @@ if test_text:
                 st.success(f"✅ DÉTECTÉ")
                 st.caption(f"Mot-clé déclencheur : **`{match.group()}`**")
             else:
-                st.markdown(":heavy_minus_sign: NON DÉTECTÉ")
+                st.error("❌ NON DÉTECTÉ")
