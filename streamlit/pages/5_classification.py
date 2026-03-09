@@ -268,7 +268,7 @@ if result_mode == "Phrase personnalisée":
                 
                 if proba is not None:
                     st.progress(float(proba[i]))
-                    st.caption(f"Confiance: {proba[i]:.2%}")
+                    st.caption(f"Probabilité: {proba[i]:.2%}")
 
 elif result_mode == "Arène des modèles":
     st.subheader("Arène des modèles 🥊")
