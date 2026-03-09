@@ -33,10 +33,6 @@ Pour cela, nous avons utilisé le topic modeling pour identifier les principales
 """)
 
 st.write("""
-Pour cela, nous avons utilisé le topic modeling pour identifier les principales thématiques et créer des clusters, que nous avons ensuite annotés manuellement.
-""")
-
-st.write("""
 Les clusters homogènes ont été regroupés en trois thématiques : qualité produit, service livraison, service client.
 """)
 
