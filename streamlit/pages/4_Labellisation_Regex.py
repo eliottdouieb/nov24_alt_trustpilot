@@ -78,7 +78,6 @@ livraison_keywords = [
     r"incomplet(s|es)?",
     r"abîmé(e|s)?",
     r"déchiré(e|s)?",
-    r"qualité\s+de\s+(service|sav|service client)"
 ]
 
 client_keywords = [
@@ -101,7 +100,8 @@ client_keywords = [
     r"réclamation(s)?",
     r"annul(é|ée|er|ation|ations)",
     r"litige(s)?",
-    r"impossible[^.]{0,40}(joindre|contact(er|é|és)?|contacter)"
+    r"impossible[^.]{0,40}(joindre|contact(er|é|és)?|contacter)",
+    r"qualité\s+de\s+(service|sav|service client)",
 ]
 
 def make_regex(words):
