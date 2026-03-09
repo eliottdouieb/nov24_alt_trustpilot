@@ -14,15 +14,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data" / "raw"
 FILE_PATH = DATA_DIR / "reviews_trust.csv"
 
+@st.cache_data
+def load_data(path):
+    return pd.read_csv(path)
 if not FILE_PATH.exists():
     st.error(f"Fichier introuvable : {FILE_PATH}")
-else:
-    df = pd.read_csv(FILE_PATH)
+    st.stop()
+
+df = load_data(FILE_PATH)
 
 st.title("Preprocessing")
 st.info(f"Dataset avant nettoyage : {len(df)} commentaires.")
 st.write("Dans cette partie, nous préparons les commentaires avant d'entraîner les modèles.")
 st.header("1. Nettoyage des données")
+
 with st.expander("Voir les étapes de nettoyage"):
     st.write( """
     - suppression des commentaires vides, trop courts ou dupliqués     
@@ -59,6 +64,7 @@ df["clean_comment"] = df["Commentaire"].apply(clean_text)
 # Suppression des commentaires pas en français
 DetectorFactory.seed = 42
 
+@st.cache_data
 def is_french(text):
     try:
         return detect(text) == "fr"
@@ -88,7 +94,8 @@ de preprocessing sur un commentaire.
 
 # Nous utilisons la lemmatisation pour ramener les mots à leur forme de base.
 # Les stopwords standards sont supprimés automatiquement par spaCy.
-
+# spacy ne recalculera pas le preprocessing pour le meme texte
+@st.cache_data
 def preprocess_spacy(text):
     doc = nlp(text)
     tokens = [
