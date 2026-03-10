@@ -43,3 +43,12 @@ Enfin, nous avons utilisé les avis annotés à l'aide du topic modeling pour en
 st.header("Groupe Projet")
 st.write("Julie Boutelet - Laurine Charbonnier - Quentin Georges - Kinjal Kapadia")
 
+st.header("Pipeline du projet")
+st.write("""
+Ce schéma présente les principales étapes de notre projet d'analyse des avis clients Trustpilot
+         """)
+
+st.image(
+    "images/Trustpilot_Pipeline.png",
+    width=500
+)
