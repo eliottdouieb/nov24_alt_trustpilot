@@ -8,6 +8,12 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 import seaborn as sns
 
+plt.rcParams["figure.figsize"] = (4,3)   # taille plus petite pour tous les graphiques
+plt.rcParams["axes.titlesize"] = 10
+plt.rcParams["axes.labelsize"] = 9
+plt.rcParams["xtick.labelsize"] = 8
+plt.rcParams["ytick.labelsize"] = 8
+
 st.set_page_config(
     page_title="Projet Trustpilot",
     layout="wide"
@@ -46,7 +52,7 @@ ax.set_xlabel("Note")
 ax.set_ylabel("Nombre de commentaires")
 ax.set_title("")  # titre vide car déjà dans st.title
 
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=False)
 
 # ANALYSE DES WORDCLOUDS PAR NOTE
 st.title("3. Analyse des WordClouds par note")
@@ -101,7 +107,7 @@ if "star" in df.columns and "comment_clean" in df.columns:
         ax.imshow(wc, interpolation="bilinear")
         ax.axis("off")
 
-        st.pyplot(fig)
+        st.pyplot(fig, use_container_width=False)
     else:
         st.warning("Aucun commentaire disponible pour cette note.")
 
@@ -191,5 +197,4 @@ ax.set_xlabel("Note")
 ax.set_ylabel("Longueur du commentaire")
 
 # Affichage dans Streamlit
-st.pyplot(fig)
-
+st.pyplot(fig, use_container_width=False)
