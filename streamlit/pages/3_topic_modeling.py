@@ -100,17 +100,17 @@ def run_resultat_final():
     st.header("Affichage des données")
 
     with st.expander(f"Tableau des topics"):
-        st.dataframe(topics_df[["Topic", "Count", "Representation", "Representative_Docs", "Catégorie"]])
+        st.dataframe(topics_df[["Topic", "Count", "Representation", "Catégorie"]])
     
-    with st.expander(f"Tableau des phrases avec topics"):
+    with st.expander(f"Dataset des phrases avec topics"):
         st.dataframe(docs_df[["comment_id", "Commentaire", "sentence", "topics"]])
+        
+    with st.expander(f"Dataset des phrases annotées"):
+        st.dataframe(dataset_phrases[["comment_id", "sentence", "Catégorie", "qualité produit", "service livraison", "service client"]])
     
-    with st.expander(f"Tableau des avis annotés"):
-        st.dataframe(dataset_avis[["comment_id", "Commentaire", "clean_comment", "qualité produit", "service livraison", "service client"]])
-    
-    with st.expander(f"Tableau des phrases annotées"):
-        st.dataframe(dataset_phrases[["comment_id", "Commentaire", "clean_comment", "sentence", "topics", "Catégorie", "qualité produit", "service livraison", "service client"]])
-    
+    with st.expander(f"Dataset des avis annotés"):
+        st.dataframe(dataset_avis[["comment_id", "Commentaire", "qualité produit", "service livraison", "service client"]])
+
     st.divider()
     
     # ---------- STATISTIQUES ----------
@@ -145,8 +145,8 @@ def run_resultat_final():
     m1, m2, m3, m4 = st.columns(4)
 
     m1.metric("Total des commentaires", f"{nb_commentaires:,}".replace(",", " "))
-    m2.metric("Commentaires classés", f"{commentaires_classes:,}".replace(",", " "))
-    m3.metric("Commentaires non classés", f"{nb_commentaires - commentaires_classes:,}".replace(",", " "))
+    m2.metric("Commentaires labellisés", f"{commentaires_classes:,}".replace(",", " "))
+    m3.metric("Commentaires non labellisés", f"{nb_commentaires - commentaires_classes:,}".replace(",", " "))
     m4.metric("Taux de couverture", f"{taux_couverture:.1f}%")
     
     st.subheader("Statistiques par phrases")
@@ -160,8 +160,8 @@ def run_resultat_final():
     p1, p2, p3, p4 = st.columns(4)
 
     p1.metric("Total des phrases", f"{total_phrases:,}".replace(",", " "))
-    p2.metric("Phrases classées", f"{phrases_classees:,}".replace(",", " "))
-    p3.metric("Phrases non classées", f"{total_phrases - phrases_classees:,}".replace(",", " "))
+    p2.metric("Phrases labellisées", f"{phrases_classees:,}".replace(",", " "))
+    p3.metric("Phrases non labellisées", f"{total_phrases - phrases_classees:,}".replace(",", " "))
     p4.metric("Taux de couverture", f"{couverture_phrases:.1f}%")
     
     st.subheader("Répartition des catégories détectées")
@@ -206,7 +206,7 @@ def run_resultat_final():
             yaxis_title=None
         )
 
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, width='stretch')
         
     with col2:
         fig_bar_phrases = px.bar(
@@ -225,7 +225,7 @@ def run_resultat_final():
             yaxis_title=None
         )
 
-        st.plotly_chart(fig_bar_phrases, use_container_width=True)
+        st.plotly_chart(fig_bar_phrases, width='stretch')
     
     st.divider()
     
@@ -234,7 +234,8 @@ def run_resultat_final():
 
     topic_id = st.selectbox(
         "Choisir un topic",
-        topics_df["Topic"]
+        topics_df["Topic"],
+        index=14
     )
 
     topic_words = topics_df.loc[
@@ -268,7 +269,8 @@ def run_resultat_final():
 
     comment_id = st.selectbox(
         "Choisir un commentaire",
-        docs_df["comment_id"].unique()
+        docs_df["comment_id"].unique(),
+        index=14
     )
     
     comment = docs_df[docs_df["comment_id"] == comment_id]["Commentaire"].values[0]
