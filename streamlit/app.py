@@ -39,9 +39,6 @@ Les clusters homogènes ont été regroupés en trois thématiques : qualité pr
 st.write("""
 Enfin, nous avons utilisé les avis annotés à l'aide du topic modeling pour entraîner un modèle de classification multi-label dont l'objectif est d'annoter les avis provenant des clusters hétérogènes.
 """)
-# Another section
-st.header("Groupe Projet")
-st.write("Julie Boutelet - Laurine Charbonnier - Quentin Georges - Kinjal Kapadia")
 
 st.header("Pipeline du projet")
 st.write("""
@@ -49,6 +46,9 @@ Ce schéma présente les principales étapes de notre projet d'analyse des avis 
          """)
 
 st.image(
-    "images/Trustpilot_Pipeline.png",
-    width=500
+    "images/Trustpilot_Project.png",
+    width=1000
 )
+# Another section
+st.header("Groupe Projet")
+st.write("Julie Boutelet - Laurine Charbonnier - Quentin Georges - Kinjal Kapadia")
