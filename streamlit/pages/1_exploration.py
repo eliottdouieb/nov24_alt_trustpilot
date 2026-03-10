@@ -170,7 +170,7 @@ else:
     ax.set_title(f"Répartition des notes pour : '{ngram_selectionne}'")
     ax.grid(axis='y', linestyle='--', alpha=0.5)
 
-    st.pyplot(fig, , use_container_width=False)
+    st.pyplot(fig, use_container_width=False)
 
 
 # DIAGRAMME LONGUEUR MOYENNE DES COMMENTAIRES
