@@ -30,7 +30,7 @@ df = pd.read_csv(DATA_PATH)
 
 # AFFICHER UN HEAD AVEC LES PREMIERES LIGNES DU DATASET
 st.title(f"1. Affichage du dataset")
-st.dataframe(df.head(), use_container_width=True)
+st.dataframe(df.head(), width="stretch")
 
 counts = df["company"].value_counts().reset_index()
 counts.columns = ["company", "count"]
