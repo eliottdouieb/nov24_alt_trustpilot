@@ -30,7 +30,16 @@ df = pd.read_csv(DATA_PATH)
 
 # AFFICHER UN HEAD AVEC LES PREMIERES LIGNES DU DATASET
 st.title(f"1. Affichage du dataset")
-st.dataframe(df.head(), width="stretch")
+st.dataframe(
+    df.head(),
+    width="stretch",
+    column_config={
+        "commentaire": st.column_config.TextColumn(
+            "commentaire",
+            width="large"
+        )
+    }
+)
 
 counts = df["company"].value_counts().reset_index()
 counts.columns = ["company", "count"]
